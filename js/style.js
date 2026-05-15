@@ -1,6 +1,6 @@
 // ─── Scroll-triggered card reveal ─────────────────────────────────────────
 const OBSERVED_SELECTOR =
-  ".hero-card, .service-card, .project-card, .profile-card, .stats-card, .contact-card";
+  ".hero-card, .service-card, .project-card, .profile-card, .stats-card, .contact-card, .stat-card-new";
 
 const scrollObserver = new IntersectionObserver(
   (entries) => {
