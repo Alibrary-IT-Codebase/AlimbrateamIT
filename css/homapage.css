@@ -23,7 +23,7 @@ html {
 
 body {
   background-color: var(--bg-main);
-  background-image: 
+  background-image:
     radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
     radial-gradient(circle at 100% 100%, rgba(37, 99, 235, 0.05) 0%, transparent 50%);
   color: var(--text-main);
@@ -45,6 +45,13 @@ body {
   background: rgba(5, 7, 10, 0.8);
   backdrop-filter: var(--glass);
   border-bottom: 1px solid var(--border-color);
+  transition: box-shadow 0.3s ease;
+}
+
+/* Shadow reinforcement once the user scrolls */
+.site-header.scrolled {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+  border-bottom-color: rgba(59, 130, 246, 0.12);
 }
 
 .logo {
@@ -62,10 +69,11 @@ body {
   color: var(--text-muted);
   font-weight: 500;
   font-size: 0.9rem;
-  transition: 0.3s;
+  transition: color 0.3s, text-shadow 0.3s;
 }
 
-.main-nav a:hover {
+.main-nav a:hover,
+.main-nav a.active {
   color: var(--accent);
   text-shadow: 0 0 10px var(--accent-glow);
 }
@@ -99,16 +107,9 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
-.hero-copy p {
-  color: var(--text-muted);
-  font-size: 1.15rem;
-  max-width: 500px;
-  margin-bottom: 2.5rem;
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
-}
-
+/* Hero elements start hidden; JS adds .visible */
+.hero-copy p,
+.hero-copy .eyebrow,
 .hero h1 {
   opacity: 0;
   transform: translateY(16px);
@@ -116,7 +117,8 @@ body {
 }
 
 .hero h1.visible,
-.hero-copy.visible {
+.hero-copy p.visible,
+.hero-copy .eyebrow.visible {
   opacity: 1;
   transform: translateY(0);
 }
@@ -161,10 +163,11 @@ body {
 }
 
 .btn-primary {
-  background: radial-gradient(circle at var(--mouse-x) center, rgba(255,255,255,0.17), transparent 35%), var(--accent);
+  background: radial-gradient(circle at var(--mouse-x) center, rgba(255, 255, 255, 0.17), transparent 35%), var(--accent);
   color: white;
   box-shadow: 0 0 20px var(--accent-glow);
   background-repeat: no-repeat;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .btn-primary:hover {
@@ -179,13 +182,14 @@ body {
 }
 
 .btn-secondary:hover {
-  background: rgba(255,255,255,0.05);
+  background: rgba(255, 255, 255, 0.05);
 }
 
-/* --- Repo Link/Button Styles --- */
-.repo-link, .repo-btn {
+/* --- Repo Link / Button Styles --- */
+.repo-link,
+.repo-btn {
   display: inline-block;
-  background: transparent;
+  background: rgba(59, 130, 246, 0.05);
   border: 1.5px solid var(--accent);
   color: var(--accent);
   text-decoration: none;
@@ -201,22 +205,10 @@ body {
   position: relative;
   overflow: hidden;
   backdrop-filter: var(--glass);
-  background: rgba(59, 130, 246, 0.05);
 }
 
-.repo-link::before, .repo-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: rgba(59, 130, 246, 0.1);
-  transition: left 0.3s ease;
-  z-index: -1;
-}
-
-.repo-link:hover, .repo-btn:hover {
+.repo-link:hover,
+.repo-btn:hover {
   background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.1));
   color: #fff;
   border-color: rgba(59, 130, 246, 0.8);
@@ -224,78 +216,121 @@ body {
   box-shadow: 0 8px 20px var(--accent-glow);
 }
 
-.repo-link:active, .repo-btn:active {
+.repo-link:active,
+.repo-btn:active {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px var(--accent-glow);
 }
 
-/* Button style for <button> element */
-.repo-btn {
-  border: none;
-  border: 1.5px solid var(--accent);
-  background: transparent;
-}
-
-/* Dark/light variant for different section backgrounds */
-.repo-link-light, .repo-btn-light {
+/* Light variant */
+.repo-link-light,
+.repo-btn-light {
   border-color: var(--text-main);
   color: var(--text-main);
   background: rgba(248, 250, 252, 0.05);
 }
 
-.repo-link-light:hover, .repo-btn-light:hover {
+.repo-link-light:hover,
+.repo-btn-light:hover {
   background: rgba(248, 250, 252, 0.15);
   color: #fff;
   border-color: var(--text-main);
   box-shadow: 0 8px 20px rgba(248, 250, 252, 0.2);
 }
 
-/* Small variant */
-.repo-link-sm, .repo-btn-sm {
+/* Size variants */
+.repo-link-sm,
+.repo-btn-sm {
   padding: 6px 18px;
   font-size: 12px;
   border-radius: 30px;
 }
 
-/* Large variant */
-.repo-link-lg, .repo-btn-lg {
+.repo-link-lg,
+.repo-btn-lg {
   padding: 14px 36px;
   font-size: 16px;
   border-radius: 50px;
 }
 
 /* Filled variant */
-.repo-link-filled, .repo-btn-filled {
+.repo-link-filled,
+.repo-btn-filled {
   background: linear-gradient(135deg, rgba(59, 130, 246, 0.9), rgba(59, 130, 246, 0.7));
   color: #fff;
   border-color: var(--accent);
   box-shadow: 0 4px 15px var(--accent-glow);
 }
 
-.repo-link-filled:hover, .repo-btn-filled:hover {
+.repo-link-filled:hover,
+.repo-btn-filled:hover {
   background: linear-gradient(135deg, var(--accent), rgba(59, 130, 246, 0.8));
   box-shadow: 0 8px 25px var(--accent-glow);
 }
 
-/* Ghost variant with glow effect */
-.repo-link-ghost, .repo-btn-ghost {
+/* Ghost variant */
+.repo-link-ghost,
+.repo-btn-ghost {
   background: transparent;
   border-color: rgba(59, 130, 246, 0.5);
   color: rgba(59, 130, 246, 0.9);
 }
 
-.repo-link-ghost:hover, .repo-btn-ghost:hover {
+.repo-link-ghost:hover,
+.repo-btn-ghost:hover {
   border-color: var(--accent);
   background: rgba(59, 130, 246, 0.15);
   box-shadow: 0 0 15px var(--accent-glow), inset 0 0 15px rgba(59, 130, 246, 0.1);
 }
 
-/* Animation for glow effect */
-.repo-link.pulse, .repo-btn.pulse {
+/* Pulse animation class */
+.repo-link.pulse,
+.repo-btn.pulse {
   animation: glowPulse 2s ease-in-out infinite;
 }
 
-/* --- Repo Card Styles --- */
+/* --- Cards --- */
+.hero-card,
+.service-card,
+.project-card,
+.profile-card,
+.stats-card {
+  background: var(--bg-card);
+  backdrop-filter: var(--glass);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 2.5rem;
+  transition: border-color 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    background 0.4s,
+    opacity 0.6s ease,
+    box-shadow 0.4s;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.hero-card:hover,
+.service-card:hover,
+.project-card:hover,
+.profile-card:hover {
+  border-color: rgba(59, 130, 246, 0.5);
+  transform: translateY(-10px);
+  background: rgba(17, 24, 39, 0.9);
+  box-shadow: 0 8px 32px var(--accent-glow);
+}
+
+/* JS adds .visible to trigger the entrance */
+.hero-card.visible,
+.service-card.visible,
+.project-card.visible,
+.profile-card.visible,
+.stats-card.visible,
+.contact-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- Repo Card --- */
 .repo-card {
   background: var(--bg-card);
   backdrop-filter: var(--glass);
@@ -411,39 +446,29 @@ body {
 }
 
 /* Repo card animation delays */
-.repo-card:nth-child(1) { animation-delay: 0.1s; }
-.repo-card:nth-child(2) { animation-delay: 0.2s; }
-.repo-card:nth-child(3) { animation-delay: 0.3s; }
-.repo-card:nth-child(4) { animation-delay: 0.4s; }
+.repo-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
 
-/* Repo cards grid */
+.repo-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.repo-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.repo-card:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
 .repo-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
 }
-.hero-card, .service-card, .project-card, .profile-card, .stats-card {
-  background: var(--bg-card);
-  backdrop-filter: var(--glass);
-  border: 1px solid var(--border-color);
-  border-radius: 20px;
-  padding: 2.5rem;
-  transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  opacity: 0;
-  transform: translateY(20px);
-}
 
-.hero-card:hover, .service-card:hover, .project-card:hover, .profile-card:hover {
-  border-color: rgba(59, 130, 246, 0.5);
-  transform: translateY(-10px);
-  background: rgba(17, 24, 39, 0.9);
-}
-
-.hero-card.visible, .service-card.visible, .project-card.visible, .profile-card.visible, .stats-card.visible, .contact-card.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
+/* --- Sections --- */
 .section {
   padding: 100px 10%;
 }
@@ -453,7 +478,15 @@ body {
   margin-bottom: 4rem;
 }
 
-.card-grid, .team-grid {
+.section-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+.card-grid,
+.team-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
@@ -463,6 +496,7 @@ body {
 .profile-card {
   position: relative;
   padding-top: 4.5rem;
+  text-align: center;
 }
 
 .profile-photo {
@@ -485,7 +519,7 @@ body {
   object-fit: cover;
   border-radius: 50%;
   filter: grayscale(100%);
-  transition: 0.4s;
+  transition: filter 0.4s;
 }
 
 .profile-card:hover img {
@@ -494,107 +528,119 @@ body {
 
 /* --- Contact Section --- */
 .contact-section {
-  background: linear-gradient(0deg, rgba(5,7,10,1) 0%, rgba(17,24,39,1) 100%);
+  background: linear-gradient(0deg, rgba(5, 7, 10, 1) 0%, rgba(17, 24, 39, 1) 100%);
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
 }
 
 .contact-card {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.contact-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- Footer --- */
+.site-footer {
+  text-align: center;
+  padding: 2rem 5%;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  border-top: 1px solid var(--border-color);
 }
 
 /* --- Animations --- */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes slideInUp {
-  from { 
-    opacity: 0; 
-    transform: translateY(30px);
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  to { 
-    opacity: 1; 
+
+  to {
+    opacity: 1;
     transform: translateY(0);
   }
 }
 
-@keyframes slideInDown {
-  from { 
-    opacity: 0; 
-    transform: translateY(-30px);
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
   }
-  to { 
-    opacity: 1; 
+
+  to {
+    opacity: 1;
     transform: translateY(0);
   }
 }
 
 @keyframes slideInLeft {
-  from { 
-    opacity: 0; 
+  from {
+    opacity: 0;
     transform: translateX(-30px);
   }
-  to { 
-    opacity: 1; 
+
+  to {
+    opacity: 1;
     transform: translateX(0);
   }
 }
 
 @keyframes slideInRight {
-  from { 
-    opacity: 0; 
+  from {
+    opacity: 0;
     transform: translateX(30px);
   }
-  to { 
-    opacity: 1; 
+
+  to {
+    opacity: 1;
     transform: translateX(0);
   }
 }
 
 @keyframes scaleIn {
-  from { 
-    opacity: 0; 
+  from {
+    opacity: 0;
     transform: scale(0.95);
   }
-  to { 
-    opacity: 1; 
+
+  to {
+    opacity: 1;
     transform: scale(1);
   }
 }
 
 @keyframes glowPulse {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 0 20px rgba(59, 130, 246, 0.3), inset 0 0 20px rgba(59, 130, 246, 0.1);
   }
+
   50% {
     box-shadow: 0 0 40px rgba(59, 130, 246, 0.6), inset 0 0 30px rgba(59, 130, 246, 0.2);
   }
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -1000px 0;
-  }
-  100% {
-    background-position: 1000px 0;
-  }
-}
-
 @keyframes bounce {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-15px);
   }
@@ -604,13 +650,15 @@ body {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
 }
 
-/* Animation Classes */
-.hero-copy, .hero-visual {
+/* Animation classes applied via JS / CSS */
+.hero-copy,
+.hero-visual {
   animation: fadeIn 0.8s ease-out forwards;
 }
 
@@ -618,78 +666,45 @@ body {
   animation: slideInUp 0.6s ease-out forwards;
 }
 
-.service-card:nth-child(1) { animation-delay: 0.1s; }
-.service-card:nth-child(2) { animation-delay: 0.2s; }
-.service-card:nth-child(3) { animation-delay: 0.3s; }
-.service-card:nth-child(4) { animation-delay: 0.4s; }
-.service-card:nth-child(5) { animation-delay: 0.5s; }
-.service-card:nth-child(6) { animation-delay: 0.6s; }
-
 .project-card {
   animation: slideInUp 0.6s ease-out forwards;
   text-align: center;
 }
 
-.project-card:nth-child(1) { animation-delay: 0.1s; }
-.project-card:nth-child(2) { animation-delay: 0.2s; }
-.project-card:nth-child(3) { animation-delay: 0.3s; }
-.project-card:nth-child(4) { animation-delay: 0.4s; }
-
 .profile-card {
   animation: slideInUp 0.6s ease-out forwards;
 }
-
-.profile-card:nth-child(1) { animation-delay: 0.1s; }
-.profile-card:nth-child(2) { animation-delay: 0.2s; }
-.profile-card:nth-child(3) { animation-delay: 0.3s; }
-.profile-card:nth-child(4) { animation-delay: 0.4s; }
-
-.stats-card {
-  animation: slideInLeft 0.6s ease-out forwards;
-}
-
-.stats-card:nth-child(odd) { animation-name: slideInLeft; }
-.stats-card:nth-child(even) { animation-name: slideInRight; }
 
 .repo-card {
   animation: slideInUp 0.6s ease-out forwards;
 }
 
-.hero-icon, .service-icon, .project-icon {
-  animation: scaleIn 0.6s ease-out forwards;
-  animation-delay: 0.2s;
+.stats-card:nth-child(odd) {
+  animation: slideInLeft 0.6s ease-out forwards;
 }
 
-.hero-icon:hover, .service-icon:hover, .project-icon:hover {
+.stats-card:nth-child(even) {
+  animation: slideInRight 0.6s ease-out forwards;
+}
+
+.hero-icon,
+.service-icon,
+.project-icon {
+  animation: scaleIn 0.6s ease-out 0.2s forwards;
+}
+
+.hero-icon:hover,
+.service-icon:hover,
+.project-icon:hover {
   animation: bounce 0.6s ease-in-out infinite;
-}
-
-/* Hover animations for interactive elements */
-.btn-primary {
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.btn-primary:hover {
-  animation: none;
-}
-
-.service-card:hover {
-  animation: none;
 }
 
 .profile-photo img:hover {
   animation: rotateSpin 0.8s ease-out;
 }
 
-/* Glow effect for accent elements */
 .btn-primary.glow {
   animation: glowPulse 2s ease-in-out infinite;
-}
-
-/* Smooth fade-in for lazy-loaded content */
-.lazy-load {
-  opacity: 0;
-  animation: fadeIn 0.6s ease-out forwards;
 }
 
 /* --- Responsive --- */
@@ -699,6 +714,19 @@ body {
     text-align: center;
     padding-top: 140px;
   }
-  .hero-copy { margin: 0 auto; }
-  .btn-secondary { margin: 1rem 0 0 0; display: block; }
+
+  .hero-copy {
+    margin: 0 auto;
+  }
+
+  .btn-secondary {
+    margin: 1rem 0 0 0;
+    display: block;
+  }
+
+  .section-grid,
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
 }

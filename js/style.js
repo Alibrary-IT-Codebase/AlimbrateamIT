@@ -1,36 +1,68 @@
-const observerOptions = {
-  root: null,
-  rootMargin: '0px',
-  threshold: 0.18,
-};
+// ─── Scroll-triggered card reveal ─────────────────────────────────────────
+const OBSERVED_SELECTOR =
+  ".hero-card, .service-card, .project-card, .profile-card, .stats-card, .contact-card";
 
-const scrollObserver = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
+const scrollObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("visible");
       scrollObserver.unobserve(entry.target);
-    }
-  });
-}, observerOptions);
+    });
+  },
+  { rootMargin: "0px", threshold: 0.15 },
+);
 
-const animatedItems = document.querySelectorAll('.hero-card, .service-card, .profile-card, .stats-card, .contact-card');
-animatedItems.forEach((item, index) => {
+document.querySelectorAll(OBSERVED_SELECTOR).forEach((item) => {
+  const siblings = Array.from(
+    item.parentElement.querySelectorAll(OBSERVED_SELECTOR),
+  );
+  const index = siblings.indexOf(item);
   item.style.transitionDelay = `${index * 80}ms`;
   scrollObserver.observe(item);
 });
 
-const heroTitle = document.querySelector('.hero h1');
-const heroCopy = document.querySelector('.hero-copy p');
-if (heroTitle && heroCopy) {
-  heroTitle.classList.add('visible');
-  heroCopy.classList.add('visible');
-}
+const heroTitle = document.querySelector(".hero h1");
+const heroCopyEls = document.querySelectorAll(
+  ".hero-copy p, .hero-copy .eyebrow",
+);
 
-const buttons = document.querySelectorAll('.btn');
-buttons.forEach((button) => {
-  button.addEventListener('mousemove', (event) => {
-    const rect = button.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    button.style.setProperty('--mouse-x', `${x}px`);
+requestAnimationFrame(() => {
+  heroTitle?.classList.add("visible");
+  heroCopyEls.forEach((el, i) => {
+    setTimeout(() => el.classList.add("visible"), i * 100);
   });
 });
+
+// ─── Button radial-gradient mouse follow ───────────────────────────────────
+document.querySelectorAll(".btn").forEach((btn) => {
+  btn.addEventListener("mousemove", ({ clientX }) => {
+    const { left } = btn.getBoundingClientRect();
+    btn.style.setProperty("--mouse-x", `${clientX - left}px`);
+  });
+});
+
+// ─── Header shadow on scroll ───────────────────────────────────────────────
+const header = document.querySelector(".site-header");
+
+const handleScroll = () => {
+  header?.classList.toggle("scrolled", window.scrollY > 20);
+};
+
+window.addEventListener("scroll", handleScroll, { passive: true });
+const navLinks = document.querySelectorAll('.main-nav a[href^="#"]');
+
+const navObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      const id = entry.target.getAttribute("id");
+      navLinks.forEach((link) => {
+        link.classList.toggle("active", link.getAttribute("href") === `#${id}`);
+      });
+    });
+  },
+  { rootMargin: "-40% 0px -55% 0px" },
+);
+
+sections.forEach((section) => navObserver.observe(section));
